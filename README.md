@@ -2,7 +2,7 @@
 
 <!-- generated from the context graph by `cjm-context-graph readme` — do not edit by hand; edit the graph (the urge to hand-edit = move it on-graph) -->
 
-_No purpose recorded on-graph yet — author it with_ `assert 1268773e-7e8b-5609-9c2d-e2f6ffeee290 purpose "…"` _(or by the repo's entity key)._
+A design system as data (ruling a439c226): token schema v1 with its check and its headless resolution into one flat vocabulary, the CSS custom-properties projection for the web, the vendored seed systems Classical and Netrunner with their OFL fonts, and the importer for a web-first system's CSS. Nothing here imports Qt, so a web build never needs PySide6; the Qt kit (cjm-substrate-qt-kit) consumes the same tokens and keeps only what Qt reads. Born out of the kit by design 0858bbd0, the theme half of the public-site redesign build 8079ae0f.
 
 ## Modules
 
@@ -51,4 +51,4 @@ _No purpose recorded on-graph yet — author it with_ `assert 1268773e-7e8b-5609
 
 ## Dependencies
 
-**Used by:** `cjm-substrate-qt-kit`
+**Used by:** `cjm-context-graph-projection`, `cjm-substrate-qt-kit`

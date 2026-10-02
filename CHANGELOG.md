@@ -3,7 +3,7 @@
 The library's release record. Each entry names the ruling or work item the
 change served, so a version reads back to its decision on the graph.
 
-## 0.0.1 — unreleased
+## 0.0.1 — 2026-10-02
 
 Born from cjm-substrate-qt-kit (design 0858bbd0, the theme half of the
 redesign build 8079ae0f): the design system's data and its headless half
