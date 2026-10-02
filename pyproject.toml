@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cjm-design-system"
+dynamic = ["version"]
+description = "A design system as data (ruling a439c226): token schema v1 with its check and its headless resolution into one flat vocabulary, the CSS custom-properties projection for the web, the vendored seed systems (Classical, Netrunner) with their fonts, and the importer for a web-first system's CSS. No Qt: the Qt kit (cjm-substrate-qt-kit) consumes the same tokens. Born on-graph."
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "Apache-2.0"}
+authors = [{name = "Christian J. Mills", email = "9126128+cj-mills@users.noreply.github.com"}]
+classifiers = ["Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/cj-mills/cjm-design-system"
+
+[tool.setuptools.dynamic]
+version = {attr = "cjm_design_system.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["cjm_design_system*"]
+
+[tool.setuptools.package-data]
+cjm_design_system = ["systems/*/tokens.json", "systems/*/fonts/*.ttf", "systems/*/fonts/*.otf",
+                     "systems/*/fonts/OFL.txt"]
