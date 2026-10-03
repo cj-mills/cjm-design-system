@@ -3,6 +3,25 @@
 The library's release record. Each entry names the ruling or work item the
 change served, so a version reads back to its decision on the graph.
 
+## 0.0.2 — unreleased
+
+The web projections of a Quarto site's theme (leg C of design 0858bbd0, build
+4bd47051; amendments 4b58c9db, 898c81d6, 6566f33a, 6af37fc3).
+
+- `web` (new; the `web` extra adds fontTools and brotli) — one Quarto theme
+  file per mode: Bootstrap's variables as literal values from `resolve`
+  (the page and state colours, Quarto's callouts, the chrome, code on the
+  surface, the grey scale on the neutral ramp, reversed in a dark mode, the
+  fonts and the type scale), and the rules the variables cannot carry (heading
+  weights, the navbar's divider, text selection, scrollbars, menus and search
+  results, category chips as the kit's secondary button, rules, focus, tables,
+  tooltips); the fonts as woff2 subsets by unicode range, weight ranges read
+  from each font, deterministic, an unchanged subset reused.
+- `tokens.to_css` — `mode=` emits one mode's block on the selector (Quarto
+  swaps whole stylesheets); every colour of the resolved vocabulary is
+  emitted, not a subset; tints are written in the CSS form — the QSS rgba's
+  0–255 alpha read as opaque in a browser.
+
 ## 0.0.1 — 2026-10-02
 
 Born from cjm-substrate-qt-kit (design 0858bbd0, the theme half of the

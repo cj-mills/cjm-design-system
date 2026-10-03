@@ -13,6 +13,10 @@ authors = [{name = "Christian J. Mills", email = "9126128+cj-mills@users.noreply
 classifiers = ["Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
 dependencies = []
 
+[project.optional-dependencies]
+# The web font projection (design 0858bbd0 (4)): TTF -> woff2 subsets by unicode range
+web = ["fonttools>=4.50", "brotli>=1.1"]
+
 [project.urls]
 Repository = "https://github.com/cj-mills/cjm-design-system"
 

@@ -12,4 +12,4 @@ imports Qt, so a web build never needs PySide6; what only Qt reads (QSS
 templates, painted widgets, the Theme runtime) stays in the kit.
 """
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"

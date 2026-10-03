@@ -293,17 +293,30 @@ def resolve(tokens: Dict[str, Any], mode: Optional[str] = None) -> Dict[str, str
     return v
 
 
-# ---- the web projection -----------------------------------------------------
-
-def to_css(tokens: Dict[str, Any], selector: str = ":root") -> str:
+def to_css(tokens: Dict[str, Any], selector: str = ":root", mode: Optional[str] = None) -> str:
     """The CSS custom-properties layer for a system — the ruling's second
     consumer (the Quarto site 8079ae0f derives its theme from this, never from
-    Bootswatch). The first mode lands on `selector`; every other mode lands on
-    `selector[data-mode="<mode>"]`, so a page switches modes by one attribute.
-    Ramps, spacing, radii and the type scale are mode-independent and emitted
-    once. Variable names mirror the resolved vocabulary with dashes."""
+    Bootswatch). With no `mode`, the first mode lands on `selector` and every
+    other mode on `selector[data-mode="<mode>"]`, so a page switches modes by one
+    attribute. With a `mode`, only that mode's block lands on `selector`: a
+    Quarto site switches light / dark by swapping whole stylesheets, one per mode
+    (design 0858bbd0 (3)). Ramps, spacing, radii and the type scale are
+    mode-independent and emitted once, on `selector`. EVERY colour of the resolved
+    vocabulary lands as a variable (the QSS holes, tints, solids, state roles and a
+    system's own keys), so a web rule can read any role a kit rule reads -- one
+    vocabulary on both sides. Variable names mirror it with dashes; a tint `resolve` writes in the QSS form
+    (`rgba(r, g, b, A)`, A on 0-255) lands in the CSS form (A on 0-1), which a
+    browser would otherwise clamp to opaque."""
     out: List[str] = []
-    first = modes(tokens)[0]
+    qss_rgba = re.compile(r"^rgba\((\d+), (\d+), (\d+), (\d+)\)$")
+
+    def css(value: str) -> str:
+        m = qss_rgba.match(value)
+        return value if not m else "rgba(%s, %s, %s, %g)" % (m[1], m[2], m[3], round(int(m[4]) / 255, 3))
+
+    if mode is not None and mode not in (tokens.get("modes") or {}):
+        raise KeyError(f"{tokens.get('name')!r} has no mode {mode!r} — modes: {modes(tokens)}")
+    first = mode or modes(tokens)[0]
     static: List[str] = []
     for ramp, steps in tokens["ramps"].items():
         static += [f"  --{ramp}-{(i + 1) * 100}: {c};" for i, c in enumerate(steps)]
@@ -319,15 +332,13 @@ def to_css(tokens: Dict[str, Any], selector: str = ":root") -> str:
         static.append(f'  --font-mono: "{f["mono"]["family"]}";')
     reading = {**READING_DEFAULTS, **(tokens.get("reading") or {})}
     static += [f"  --measure: {reading['measure']}ch;", f"  --line-height: {reading['line_height']};"]
-    per_mode = tuple(MODE_KEYS) + STATE_ROLES + ("dim", "muted", "divider", "divider_strong", "line",
-                                                  "label", "selection", "accent_hover", "row_hover")
-    for mode in modes(tokens):
-        v = resolve(tokens, mode)
-        keys = list(per_mode) + [k for k in tokens["modes"][mode] if k not in per_mode and k in v]
-        body = [f"  --{k.replace('_', '-')}: {v[k]};" for k in keys if k != "shadow_strength"]
+    for m in ([mode] if mode is not None else modes(tokens)):
+        v = resolve(tokens, m)
+        keys = [k for k, val in v.items() if isinstance(val, str) and val.startswith(("#", "rgba("))]
+        body = [f"  --{k.replace('_', '-')}: {css(v[k])};" for k in keys if k != "shadow_strength"]
         body.append(f"  --shadow-strength: {v['shadow_strength']};")
-        sel = selector if mode == first else f'{selector}[data-mode="{mode}"]'
-        block = body if mode != first else static + body
+        sel = selector if m == first else f'{selector}[data-mode="{m}"]'
+        block = body if m != first else static + body
         out.append("%s {\n%s\n}" % (sel, "\n".join(block)))
     return "/* %s — design tokens, projected by cjm-design-system (schema v%d) */\n%s\n" % (
         tokens["name"], SCHEMA_VERSION, "\n\n".join(out))
