@@ -155,7 +155,9 @@ def theme_rules(tokens: Dict[str, Any]) -> str:
     tint under the page's own ink, as the kit's text widgets do (Bootstrap sets none, so a
     browser's default showed) -- and the kit's roles on every other element a site renders
     (the audit of the kit's QSS against the site, amendment of 0858bbd0): scrollbars, menus
-    and the search results, category tags, rules, focus, tables, tooltips."""
+    and the search results, category tags, rules, focus, tables, tooltips -- and the kit's button
+    and chip roles by name (`kit-button`, `kit-primary`, `kit-chip`) for a page that marks an
+    element with the role it takes."""
     rules = [f"h{n}, .h{n} {{ font-weight: var(--fw-h{n}); }}" for n in range(1, 6) if f"h{n}" in tokens["type"]]
     rules += [".navbar { border-bottom: 1px solid var(--divider); }",
               "div.sourceCode { border-color: var(--divider); }",
@@ -188,6 +190,29 @@ def theme_rules(tokens: Dict[str, Any]) -> str:
     rules.append(", ".join(c + ":hover" for c in chips) + " { background-color: var(--text-hover); color: var(--text); }")
     rules.append(", ".join(c + ":active" for c in chips) + " { background-color: var(--text-pressed); }")
     rules.append(", ".join(c + ":focus-visible" for c in chips) + " { border-color: var(--accent); outline: none; }")
+    # the kit's roles by name, for an element a page marks with the role it takes (design 8b4f15d0
+    # (8) / (7)): `kit-button` is the SECONDARY BUTTON (QPushButton), `kit-primary` its primary
+    # variant (accent ink and edge), `kit-chip` the category chip above at a page's own size
+    rules.append(".kit-button, .kit-chip { display: inline-block; color: var(--text); background-color: transparent; "
+                 "border: 1px solid var(--divider); border-radius: var(--radius-md); text-decoration: none; "
+                 "cursor: pointer; }")
+    rules.append(".kit-button { font-family: var(--font-heading); font-weight: var(--heading-weight); "
+                 "padding: var(--space-1) var(--space-4); }")
+    rules.append(".kit-chip { font-size: 0.8em; padding: 0 var(--space-2); }")
+    rules.append(".kit-button:hover, .kit-chip:hover { background-color: var(--text-hover); color: var(--text); }")
+    rules.append(".kit-button:active, .kit-chip:active { background-color: var(--text-pressed); }")
+    rules.append(".kit-button:focus-visible, .kit-chip:focus-visible { border-color: var(--accent); outline: none; }")
+    rules.append(".kit-button.kit-primary { color: var(--accent-text); border-color: var(--accent); }")
+    rules.append(".kit-button.kit-primary:hover { background-color: var(--accent-hover); color: var(--accent-text); }")
+    rules.append(".kit-button.kit-primary:active { background-color: var(--accent-press-tint); "
+                 "border-color: var(--accent-pressed); }")
+    rules.append(".kit-button.kit-primary:focus-visible { box-shadow: 0 0 0 1px var(--accent); }")
+    # a finger needs a bigger target than a pointer (the review of b5385504: chips pressed wrong on
+    # a phone and a tablet): under a coarse pointer every chip grows to a 2rem touch target, the
+    # fine-pointer size unchanged
+    rules.append("@media (pointer: coarse) { " + ", ".join(chips + (".kit-chip",))
+                 + " { display: inline-flex; align-items: center; min-height: 2rem; "
+                 "padding: 0 var(--space-3); margin: 0 var(--space-1) var(--space-1) 0; } }")
     # rules: the divider
     rules.append("hr { color: var(--divider); opacity: 1; }")
     # focus: an accent edge, no glow (the kit's :focus)

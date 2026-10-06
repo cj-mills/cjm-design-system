@@ -17,6 +17,11 @@ The web projections of a Quarto site's theme (leg C of design 0858bbd0, build
   results, category chips as the kit's secondary button, rules, focus, tables,
   tooltips); the fonts as woff2 subsets by unicode range, weight ranges read
   from each font, deterministic, an unchanged subset reused.
+- `web.theme_rules` — the kit's roles by name for a page that marks an element
+  with the role it takes: `kit-button` (the secondary button), `kit-primary`
+  (accent ink and edge), `kit-chip` (the category chip); under a coarse
+  pointer every chip role grows to a 2rem touch target (the home page's build
+  bf2ea1b9, design 8b4f15d0, amendment 2cabfd2f).
 - `tokens.to_css` — `mode=` emits one mode's block on the selector (Quarto
   swaps whole stylesheets); every colour of the resolved vocabulary is
   emitted, not a subset; tints are written in the CSS form — the QSS rgba's
