@@ -143,3 +143,16 @@ def test_static_fonts_take_the_os2_weight():
     bold = web._describe(TTFont(str(by_name["CourierPrime-Bold.ttf"])))
     assert bold["weight"] == (700, 700) and bold["generic"] == "monospace"
     assert web._describe(TTFont(str(by_name["CourierPrime-Italic.ttf"])))["style"] == "italic"
+
+
+def test_the_kit_roles_by_name_carry_the_checked_and_disabled_states(seed):
+    # The projected listing's controls (design e66296bd): each takes a kit role by name, and the
+    # checked state follows the roles so it wins at equal specificity
+    rules = web.theme_rules(seed[1])
+    for role in (".kit-ghost {", ".kit-tab {", ".kit-seg {", ".kit-seg-button {"):
+        assert role in rules
+    checked = rules.index('.kit-chip[aria-pressed="true"]')
+    assert checked > rules.index(".kit-seg-button + .kit-seg-button")
+    assert '.kit-button[aria-current="page"]' in rules[checked - 200:checked + 200]
+    assert ".kit-chip:disabled" in rules and "var(--disabled-text)" in rules
+    assert '[aria-orientation="vertical"] > .kit-tab[aria-selected="true"] { border-right-color: var(--accent); }' in rules

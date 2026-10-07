@@ -155,9 +155,10 @@ def theme_rules(tokens: Dict[str, Any]) -> str:
     tint under the page's own ink, as the kit's text widgets do (Bootstrap sets none, so a
     browser's default showed) -- and the kit's roles on every other element a site renders
     (the audit of the kit's QSS against the site, amendment of 0858bbd0): scrollbars, menus
-    and the search results, category tags, rules, focus, tables, tooltips -- and the kit's button
-    and chip roles by name (`kit-button`, `kit-primary`, `kit-chip`) for a page that marks an
-    element with the role it takes."""
+    and the search results, category tags, rules, focus, tables, tooltips -- and the kit's roles by
+    name for a page that marks an element with the role it takes: `kit-button`, `kit-primary`,
+    `kit-chip`, `kit-ghost`, `kit-tab`, `kit-seg` / `kit-seg-button`, with the kit's checked state
+    (aria-pressed / aria-current) and disabled state on them."""
     rules = [f"h{n}, .h{n} {{ font-weight: var(--fw-h{n}); }}" for n in range(1, 6) if f"h{n}" in tokens["type"]]
     rules += [".navbar { border-bottom: 1px solid var(--divider); }",
               "div.sourceCode { border-color: var(--divider); }",
@@ -207,6 +208,44 @@ def theme_rules(tokens: Dict[str, Any]) -> str:
     rules.append(".kit-button.kit-primary:active { background-color: var(--accent-press-tint); "
                  "border-color: var(--accent-pressed); }")
     rules.append(".kit-button.kit-primary:focus-visible { box-shadow: 0 0 0 1px var(--accent); }")
+    # the GHOST button (QPushButton[variant=ghost]): accent ink on no edge, its own washes -- a
+    # panel's Show / Hide, a Clear all (the projected listing, design e66296bd)
+    rules.append(".kit-ghost { display: inline-block; color: var(--accent-text); background-color: transparent; "
+                 "border: 1px solid transparent; border-radius: var(--radius-md); font-family: var(--font-heading); "
+                 "font-weight: var(--heading-weight); padding: 0 var(--space-1); text-decoration: none; cursor: pointer; }")
+    rules.append(".kit-ghost:hover { background-color: var(--ghost-hover); color: var(--accent-text); }")
+    rules.append(".kit-ghost:active { background-color: var(--ghost-press); }")
+    rules.append(".kit-ghost:focus-visible { border-color: var(--accent); outline: none; }")
+    # the TAB (QTabBar::tab): the heading face in muted ink on no fill over a 2px edge that turns
+    # accent when selected; a column of tabs (aria-orientation vertical) takes the edge on its right
+    rules.append(".kit-tab { color: var(--muted); background-color: transparent; border: none; "
+                 "border-bottom: 2px solid transparent; font-family: var(--font-heading); "
+                 "font-weight: var(--heading-weight); padding: var(--space-2) var(--space-3); cursor: pointer; }")
+    rules.append(".kit-tab:hover { color: var(--text); }")
+    rules.append(".kit-tab[aria-selected=\"true\"] { color: var(--accent-text); border-bottom-color: var(--accent); }")
+    rules.append("[aria-orientation=\"vertical\"] > .kit-tab { border-bottom: none; border-right: 2px solid transparent; }")
+    rules.append("[aria-orientation=\"vertical\"] > .kit-tab[aria-selected=\"true\"] { border-right-color: var(--accent); }")
+    rules.append(".kit-tab:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }")
+    # the SEGMENTED control (QFrame[role=seg] of QPushButton[variant=seg]): one divider-edged frame,
+    # its buttons in the body face split by the divider
+    rules.append(".kit-seg { display: inline-flex; border: 1px solid var(--divider); border-radius: var(--radius-md); }")
+    rules.append(".kit-seg-button { color: var(--text); background-color: transparent; border: 1px solid transparent; "
+                 "border-radius: 0; font-family: var(--font-body); font-weight: 400; "
+                 "padding: var(--space-2) var(--space-3); cursor: pointer; }")
+    rules.append(".kit-seg-button + .kit-seg-button { border-left-color: var(--divider); }")
+    rules.append(".kit-seg-button:hover { background-color: var(--text-hover); }")
+    rules.append(".kit-seg-button:focus-visible { border-color: var(--accent); outline: none; }")
+    # the CHECKED state (QToolButton:checked, a seg button's :checked): accent ink and edge on the
+    # button, chip or seg button a page marks pressed or current (a selected filter, the order, the
+    # current page) -- after the roles, so it wins at equal specificity
+    on = ('.kit-button[aria-pressed="true"]', '.kit-button[aria-current="page"]', '.kit-chip[aria-pressed="true"]',
+          '.kit-seg-button[aria-pressed="true"]')
+    rules.append(", ".join(on) + " { color: var(--accent-text); border-color: var(--accent); }")
+    # the DISABLED state (QPushButton:disabled): the disabled ink and edge, no wash, no pointer
+    rules.append(".kit-button:disabled, .kit-chip:disabled, .kit-ghost:disabled, .kit-seg-button:disabled "
+                 "{ color: var(--disabled-text); border-color: var(--disabled-border); background-color: transparent; "
+                 "cursor: default; }")
+    rules.append(".kit-ghost:disabled { border-color: transparent; }")
     # a finger needs a bigger target than a pointer (the review of b5385504: chips pressed wrong on
     # a phone and a tablet): under a coarse pointer every chip grows to a 2rem touch target, the
     # fine-pointer size unchanged
