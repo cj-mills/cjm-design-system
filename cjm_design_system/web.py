@@ -237,9 +237,10 @@ def theme_rules(tokens: Dict[str, Any]) -> str:
     rules.append(".kit-seg-button:focus-visible { border-color: var(--accent); outline: none; }")
     # the CHECKED state (QToolButton:checked, a seg button's :checked): accent ink and edge on the
     # button, chip or seg button a page marks pressed or current (a selected filter, the order, the
-    # current page) -- after the roles, so it wins at equal specificity
+    # current page), or a chip it marks selected (a listed item's chip naming a selected filter: a
+    # link, so no aria-pressed) -- after the roles, so it wins at equal specificity
     on = ('.kit-button[aria-pressed="true"]', '.kit-button[aria-current="page"]', '.kit-chip[aria-pressed="true"]',
-          '.kit-seg-button[aria-pressed="true"]')
+          '.kit-chip.is-selected', '.kit-seg-button[aria-pressed="true"]')
     rules.append(", ".join(on) + " { color: var(--accent-text); border-color: var(--accent); }")
     # the DISABLED state (QPushButton:disabled): the disabled ink and edge, no wash, no pointer
     rules.append(".kit-button:disabled, .kit-chip:disabled, .kit-ghost:disabled, .kit-seg-button:disabled "
