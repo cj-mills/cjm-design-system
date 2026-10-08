@@ -12,6 +12,7 @@ A design system as data (ruling a439c226): token schema v1 with its check and it
 - **`cjm_design_system.tools.__init__`** — Design-system tools (run as modules):
 - **`cjm_design_system.tools.build`** — Build the static web projections of a design system: the CSS
 - **`cjm_design_system.tools.css_to_tokens`** — Import a web-first design system's CSS into a schema-v1 tokens file.
+- **`cjm_design_system.web`** — The web projections of a design system beyond the CSS variable layer (design
 
 ## API
 
@@ -48,6 +49,17 @@ A design system as data (ruling a439c226): token schema v1 with its check and it
 - `parse_root` _function_
 - `px` _function_
 - `ramp` _function_
+
+### `cjm_design_system.web`
+
+- `bootstrap_defaults` _function_ — Bootstrap's variables for one mode, every value read from `resolve(tokens, mode)`:
+- `font_files` _function_ — The files a system's tokens name, resolved the way the Qt kit registers them.
+- `format_ranges` _function_ — Code points -> the shortest CSS unicode-range list naming exactly them.
+- `parse_ranges` _function_ — A CSS unicode-range list ("U+0000-00FF, U+0131") -> the code points it names.
+- `sha256_file` _function_
+- `theme_rules` _function_ — The rules the variables cannot carry: the per-level heading weights the type scale names
+- `theme_scss` _function_ — One Quarto theme file for one mode of a system.
+- `web_fonts` _function_ — Convert each font file into woff2 subsets by unicode range and return the @font-face
 
 ## Dependencies
 
