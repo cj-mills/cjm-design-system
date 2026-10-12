@@ -7,9 +7,7 @@ import copy
 import json
 
 import pytest
-
-from cjm_design_system import systems
-from cjm_design_system import tokens as T
+from cjm_design_system import systems, tokens as T
 
 
 @pytest.fixture(params=["classical", "netrunner"])

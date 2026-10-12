@@ -6,9 +6,7 @@ no glyph, read their weight range from the font, and rebuild only what changed."
 import re
 
 import pytest
-
-from cjm_design_system import systems, web
-from cjm_design_system import tokens as T
+from cjm_design_system import systems, tokens as T, web
 
 
 @pytest.fixture(params=["classical", "netrunner"])
